@@ -41,18 +41,16 @@ fun UnitConverter()
         OutlinedTextField(value = "", onValueChange = {//insert code when value in text field changes
 
         });
+        Text("Result:");
         Row {
             //Within row, all the UI elements will be side by side
         }
     }
 }
 
-
-
-
-
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-
+fun UnitConverterPreview(){
+    UnitConverter();
 }
+
