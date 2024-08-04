@@ -58,11 +58,12 @@ fun UnitConverter()
 {
     var inputValue by remember { mutableStateOf("") }
     var outputValue by remember { mutableStateOf("")}
-    var inputUnit by remember { mutableStateOf("Centimeters")}
+    var inputUnit by remember { mutableStateOf("Meters")}
     var outputUnit by remember { mutableStateOf("Meters")}
     var inputExpanded by remember { mutableStateOf(false)}
     var outputExpanded by remember { mutableStateOf(false)}
-    var conversionFactor by remember { mutableStateOf( 0.01 )}
+    var inputConversionFactor by remember { mutableStateOf( 1.00 )}
+    var outputConversionFactor by remember { mutableStateOf( 1.00 )}
 
     fun convertUnits()
     {
@@ -71,8 +72,8 @@ fun UnitConverter()
         val inputValueDouble = inputValue.toDoubleOrNull() ?: 0.0 //if we enter something that cannot be converted to Double,
                                                                     //0.0 is returned instead of null
 
-        //this formula right here returns a result without all the long decimals at the back as we are dividing an Int with an Int
-        var result = (inputValueDouble * conversionFactor * 100).roundToInt() / 100;
+        //this formula right here returns a result without all the long decimals at the back
+        var result = (inputValueDouble * inputConversionFactor * 100.0 / outputConversionFactor).roundToInt() / 100.0;
 
         //update the outputValue mutablestate so that we can display it within our UI
         outputValue = result.toString();
@@ -94,6 +95,7 @@ fun UnitConverter()
                                     // input service, we then assigned this "it" to the inputValue variable, which is assigned to
                                     // value above, which is what gets displayed on the screen
             inputValue = it;
+            convertUnits();//update the outputResult everytime you change the outlinedtextfield value
         },
             label = { Text(text = "Enter Value")}
         );
@@ -106,7 +108,7 @@ fun UnitConverter()
 
                 //Input Button
                 Button(onClick = { inputExpanded = true }) {
-                    Text(text = "Select");
+                    Text(text = inputUnit);
                     Icon(Icons.Default.ArrowDropDown, "Set to empty");
                 }
                 DropdownMenu(expanded = inputExpanded, onDismissRequest = { inputExpanded = false}) {
@@ -115,7 +117,7 @@ fun UnitConverter()
                         onClick = {
                             inputUnit = "Centimeters";
                             inputExpanded = false;
-                            conversionFactor = 0.01;
+                            inputConversionFactor = 0.01;
                             convertUnits();
                         }
                     )
@@ -124,7 +126,7 @@ fun UnitConverter()
                         onClick = {
                             inputUnit = "Meters";
                             inputExpanded = false;
-                            conversionFactor = 1.0;
+                            inputConversionFactor = 1.0;
                             convertUnits();
                         }
                     )
@@ -133,7 +135,7 @@ fun UnitConverter()
                         onClick = {
                             inputUnit = "Feet";
                             inputExpanded = false;
-                            conversionFactor = 0.3048;
+                            inputConversionFactor = 0.3048;
                             convertUnits();
                         }
                     )
@@ -142,7 +144,7 @@ fun UnitConverter()
                         onClick = {
                             inputUnit = "Millimeters";
                             inputExpanded = false;
-                            conversionFactor = 0.001;
+                            inputConversionFactor = 0.001;
                             convertUnits();
                         }
                     )
@@ -155,7 +157,7 @@ fun UnitConverter()
 
                 //Output Button
                 Button(onClick = { outputExpanded = true }) {
-                    Text(text = "Select");
+                    Text(text = outputUnit);
                     Icon(Icons.Default.ArrowDropDown, "Set to empty");
                 }
                 DropdownMenu(expanded = outputExpanded, onDismissRequest = { outputExpanded = false}) {
@@ -164,6 +166,8 @@ fun UnitConverter()
                         onClick = {
                             outputUnit = "Centimeters";
                             outputExpanded = false;
+                            outputConversionFactor = 0.01;
+                            convertUnits();
                         }
                     )
                     DropdownMenuItem(
@@ -171,6 +175,8 @@ fun UnitConverter()
                         onClick = {
                             outputUnit = "Meters";
                             outputExpanded = false;
+                            outputConversionFactor = 1.0;
+                            convertUnits();
                         }
                     )
                     DropdownMenuItem(
@@ -178,6 +184,8 @@ fun UnitConverter()
                         onClick = {
                             outputUnit = "Feet";
                             outputExpanded = false;
+                            outputConversionFactor = 0.3048;
+                            convertUnits();
                         }
                     )
                     DropdownMenuItem(
@@ -185,13 +193,15 @@ fun UnitConverter()
                         onClick = {
                             outputUnit = "Millimeters";
                             outputExpanded = false;
+                            outputConversionFactor = 0.001;
+                            convertUnits();
                         }
                     )
                 }
             }
         }
         Spacer(modifier = Modifier.height(16.dp));
-        Text("Result:");
+        Text("Result: ${outputValue}");
     }
 }
 
