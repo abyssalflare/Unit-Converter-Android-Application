@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.unitconverter.ui.theme.UnitConverterTheme
+import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,9 +60,23 @@ fun UnitConverter()
     var outputValue by remember { mutableStateOf("")}
     var inputUnit by remember { mutableStateOf("Centimeters")}
     var outputUnit by remember { mutableStateOf("Meters")}
-    var iExpanded by remember { mutableStateOf(false)}
-    var oExpanded by remember { mutableStateOf(false)}
-    var conversionFactor = remember { mutableStateOf( 0.01 )}
+    var inputExpanded by remember { mutableStateOf(false)}
+    var outputExpanded by remember { mutableStateOf(false)}
+    var conversionFactor by remember { mutableStateOf( 0.01 )}
+
+    fun convertUnits()
+    {
+        // ?: elvis operator
+        // a smart and quick if else operator
+        val inputValueDouble = inputValue.toDoubleOrNull() ?: 0.0 //if we enter something that cannot be converted to Double,
+                                                                    //0.0 is returned instead of null
+
+        //this formula right here returns a result without all the long decimals at the back as we are dividing an Int with an Int
+        var result = (inputValueDouble * conversionFactor * 100).roundToInt() / 100;
+
+        //update the outputValue mutablestate so that we can display it within our UI
+        outputValue = result.toString();
+    }
 
 
     Column(
@@ -85,52 +100,92 @@ fun UnitConverter()
         Spacer(modifier = Modifier.height(16.dp));
         Row {
             //Within row, all the UI elements will be side by side
+
+            //Input Box
             Box{
-                Button(onClick = { /*TODO*/ }) {
+
+                //Input Button
+                Button(onClick = { inputExpanded = true }) {
                     Text(text = "Select");
                     Icon(Icons.Default.ArrowDropDown, "Set to empty");
                 }
-                DropdownMenu(expanded = false, onDismissRequest = { /*TODO*/ }) {
+                DropdownMenu(expanded = inputExpanded, onDismissRequest = { inputExpanded = false}) {
                     DropdownMenuItem(
                         text = { Text(text = "Centimeters") },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            inputUnit = "Centimeters";
+                            inputExpanded = false;
+                            conversionFactor = 0.01;
+                            convertUnits();
+                        }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Meters") },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            inputUnit = "Meters";
+                            inputExpanded = false;
+                            conversionFactor = 1.0;
+                            convertUnits();
+                        }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Feet") },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            inputUnit = "Feet";
+                            inputExpanded = false;
+                            conversionFactor = 0.3048;
+                            convertUnits();
+                        }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Millimeters") },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            inputUnit = "Millimeters";
+                            inputExpanded = false;
+                            conversionFactor = 0.001;
+                            convertUnits();
+                        }
                     )
                 }
             }
             Spacer(modifier = Modifier.width(16.dp));
+
+            //Output Box
             Box{
-                Button(onClick = { /*TODO*/ }) {
+
+                //Output Button
+                Button(onClick = { outputExpanded = true }) {
                     Text(text = "Select");
                     Icon(Icons.Default.ArrowDropDown, "Set to empty");
                 }
-                DropdownMenu(expanded = false, onDismissRequest = { /*TODO*/ }) {
+                DropdownMenu(expanded = outputExpanded, onDismissRequest = { outputExpanded = false}) {
                     DropdownMenuItem(
                         text = { Text(text = "Centimeters") },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            outputUnit = "Centimeters";
+                            outputExpanded = false;
+                        }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Meters") },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            outputUnit = "Meters";
+                            outputExpanded = false;
+                        }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Feet") },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            outputUnit = "Feet";
+                            outputExpanded = false;
+                        }
                     )
                     DropdownMenuItem(
                         text = { Text(text = "Millimeters") },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            outputUnit = "Millimeters";
+                            outputExpanded = false;
+                        }
                     )
                 }
             }
